@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+const (
+	//DefaultLabel is used if the given label is wrong
+	DefaultLabel = "instance"
+)
+
 type targets struct {
 	Status string `json:"status"`
 	Data   struct {
@@ -77,7 +82,11 @@ func TargetsHealth(address, label, warning, critical string) (err error) {
 		} else {
 			healthy += 1
 		}
-		check_x.NewPerformanceData(target.Labels[label], health)
+		if val, ok := target.Labels[label]; ok {
+			check_x.NewPerformanceData(val, health)
+		} else {
+			check_x.NewPerformanceData(target.Labels[DefaultLabel], health)
+		}
 	}
 	var healthRate float64
 	sumTargets := float64(len((*targets).Data.ActiveTargets))

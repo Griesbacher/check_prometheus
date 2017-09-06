@@ -60,9 +60,9 @@ func main() {
 	}
 	flagLabel := cli.StringFlag{
 		Name:        "l",
-		Usage:       "Label, which will be used for the performance data. By default job and instance should be available.",
+		Usage:       "Prometheus-Label, which will be used for the performance data label. By default job and instance should be available.",
 		Destination: &label,
-		Value:       "instance",
+		Value:       mode.DefaultLabel,
 	}
 	app.Commands = []cli.Command{
 		{
