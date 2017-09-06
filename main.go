@@ -18,6 +18,7 @@ var (
 	alias    string
 	search   string
 	replace  string
+	label    string
 )
 
 func startTimeout() {
@@ -56,6 +57,12 @@ func main() {
 		Name:        "a",
 		Usage:       "Alias, will replace the query within the output, if set",
 		Destination: &alias,
+	}
+	flagLabel := cli.StringFlag{
+		Name:        "l",
+		Usage:       "Label, which will be used for the performance data. By default job and instance should be available.",
+		Destination: &label,
+		Value:       "instance",
 	}
 	app.Commands = []cli.Command{
 		{
@@ -121,15 +128,16 @@ func main() {
 				}, {
 					Name:        "targets_health",
 					Usage:       "Returns the health of the targets",
-					Description: `The warning and critical thresholds are appied on the health_rate.`,
+					Description: `The warning and critical thresholds are appied on the health_rate. The health_rate is calculted: sum(healthy) / sum(targets).`,
 					Action: func(c *cli.Context) error {
 						startTimeout()
-						return mode.TargetsHealth(address, warning, critical)
+						return mode.TargetsHealth(address, label, warning, critical)
 					},
 					Flags: []cli.Flag{
 						flagAddress,
 						flagWarning,
 						flagCritical,
+						flagLabel,
 					},
 				},
 			},
