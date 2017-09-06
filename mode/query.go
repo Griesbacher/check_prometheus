@@ -61,7 +61,7 @@ func Query(address, query, warning, critical, alias, search, replace string) (er
 			helper.CheckTimestampFreshness(sample.Timestamp)
 
 			sampleValue := float64(sample.Value)
-			check_x.NewPerformanceData(replaceLabel(sample.Metric.String(), re, replace), sampleValue).Warn(warn).Crit(crit)
+			check_x.NewPerformanceData(replaceLabel(model.LabelSet(sample.Metric).String(), re, replace), sampleValue).Warn(warn).Crit(crit)
 			states = append(states, check_x.Evaluator{Warning: warn, Critical: warn}.Evaluate(sampleValue))
 
 		}
