@@ -1,36 +1,36 @@
 package mode
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/griesbacher/check_prometheus/helper"
+	"github.com/griesbacher/check_x"
 	"net/url"
 	"path"
-	"fmt"
-	"time"
-	"encoding/json"
 	"strings"
-	"github.com/griesbacher/check_x"
+	"time"
 )
 
 type targets struct {
 	Status string `json:"status"`
 	Data   struct {
-		       ActiveTargets []struct {
-			       DiscoveredLabels struct {
-							Address     string `json:"__address__"`
-							MetricsPath string `json:"__metrics_path__"`
-							Scheme      string `json:"__scheme__"`
-							Job         string `json:"job"`
-						} `json:"discoveredLabels"`
-			       Labels           struct {
-							Instance string `json:"instance"`
-							Job      string `json:"job"`
-						} `json:"labels"`
-			       ScrapeURL        string    `json:"scrapeUrl"`
-			       LastError        string    `json:"lastError"`
-			       LastScrape       time.Time `json:"lastScrape"`
-			       Health           string    `json:"health"`
-		       } `json:"activeTargets"`
-	       } `json:"data"`
+		ActiveTargets []struct {
+			DiscoveredLabels struct {
+				Address     string `json:"__address__"`
+				MetricsPath string `json:"__metrics_path__"`
+				Scheme      string `json:"__scheme__"`
+				Job         string `json:"job"`
+			} `json:"discoveredLabels"`
+			Labels struct {
+				Instance string `json:"instance"`
+				Job      string `json:"job"`
+			} `json:"labels"`
+			ScrapeURL  string    `json:"scrapeUrl"`
+			LastError  string    `json:"lastError"`
+			LastScrape time.Time `json:"lastScrape"`
+			Health     string    `json:"health"`
+		} `json:"activeTargets"`
+	} `json:"data"`
 }
 
 func getTargets(address string) (*targets, error) {
@@ -50,6 +50,7 @@ func getTargets(address string) (*targets, error) {
 	return &dat, nil
 }
 
+//TargetsHealth tests the health of the targets
 func TargetsHealth(address, warning, critical string) (err error) {
 	warn, err := check_x.NewThreshold(warning)
 	if err != nil {
@@ -82,15 +83,15 @@ func TargetsHealth(address, warning, critical string) (err error) {
 		}
 		check_x.NewPerformanceData(target.Labels.Job, health)
 	}
-	var health_rate float64
-	if unhealthy == 0{
-		health_rate = 1
-	}else {
-		health_rate = float64(healthy) / float64(len((*targets).Data.ActiveTargets))
+	var healthRate float64
+	if unhealthy == 0 {
+		healthRate = 1
+	} else {
+		healthRate = float64(healthy) / float64(len((*targets).Data.ActiveTargets))
 	}
-	check_x.NewPerformanceData("health_rate", health_rate).Warn(warn).Crit(crit).Min(0).Max(1)
+	check_x.NewPerformanceData("health_rate", healthRate).Warn(warn).Crit(crit).Min(0).Max(1)
 	check_x.NewPerformanceData("targets", float64(len((*targets).Data.ActiveTargets))).Min(0)
-	state := check_x.Evaluator{Warning: warn, Critical: warn}.Evaluate(health_rate)
+	state := check_x.Evaluator{Warning: warn, Critical: warn}.Evaluate(healthRate)
 	check_x.LongExit(state, fmt.Sprintf("There are %d healthy and %d unhealthy targets", healthy, unhealthy), strings.TrimRight(msg, "\n"))
 	return
 }

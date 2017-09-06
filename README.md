@@ -1,18 +1,21 @@
 [![Circle CI](https://circleci.com/gh/Griesbacher/check_prometheus/tree/master.svg?style=svg)](https://circleci.com/gh/Griesbacher/check_prometheus/tree/master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Griesbacher/check_prometheus)](https://goreportcard.com/report/github.com/Griesbacher/check_prometheus)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+
 # check_prometheus
 Monitoring Plugin to check the health of a Prometheus server and its data
 
 ## Usage
 ### Global Options
 ```
-$ go run main.go -h
+$ check_prometheus -h
 NAME:
    check_prometheus - Checks different prometheus stats as well the data itself
    Copyright (c) 2017 Philip Griesbacher
    https://github.com/Griesbacher/check_prometheus
 
 USAGE:
-   main.exe [global options] command [command options] [arguments...]
+   check_prometheus [global options] command [command options] [arguments...]
 
 VERSION:
    0.0.1
@@ -31,7 +34,7 @@ GLOBAL OPTIONS:
 ### Command options
 
 ```
-$ go run main.go mode -h
+$ check_prometheus mode -h
    NAME:
       check_prometheus mode - check mode
    
@@ -47,10 +50,10 @@ $ go run main.go mode -h
       --help, -h  show help
 ```
 
-### Subcommand options
+### Subcommand options example
 
 ```
-$ go run main.go mode query -h
+$ check_prometheus mode query -h
 NAME:
    check_prometheus mode query - Checks collected data
 

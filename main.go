@@ -1,23 +1,23 @@
 package main
 
 import (
+	"github.com/griesbacher/check_prometheus/helper"
 	"github.com/griesbacher/check_prometheus/mode"
 	"github.com/griesbacher/check_x"
 	"github.com/urfave/cli"
 	"os"
 	"time"
-	"github.com/griesbacher/check_prometheus/helper"
 )
 
 var (
-	address string
-	timeout int
-	warning string
+	address  string
+	timeout  int
+	warning  string
 	critical string
-	query string
-	alias string
-	search string
-	replace string
+	query    string
+	alias    string
+	search   string
+	replace  string
 )
 
 func startTimeout() {
@@ -64,10 +64,10 @@ func main() {
 			Usage:   "check mode",
 			Subcommands: []cli.Command{
 				{
-					Name:  "ping",
-					Aliases: []string{"p"},
-					Usage:"Returns the build informations",
-					Description:`This check requires that the prometheus server itself is listetd as target. Following query will be used: 'prometheus_build_info{job="prometheus"}'`,
+					Name:        "ping",
+					Aliases:     []string{"p"},
+					Usage:       "Returns the build informations",
+					Description: `This check requires that the prometheus server itself is listetd as target. Following query will be used: 'prometheus_build_info{job="prometheus"}'`,
 					Action: func(c *cli.Context) error {
 						startTimeout()
 						return mode.Ping(address)
@@ -75,12 +75,11 @@ func main() {
 					Flags: []cli.Flag{
 						flagAddress,
 					},
-
 				}, {
-					Name:  "query",
+					Name:    "query",
 					Aliases: []string{"q"},
-					Usage:"Checks collected data",
-					Description:`Your Promqlquery has to return a vector / scalar / matrix result. The warning and critical values are applied to every value.
+					Usage:   "Checks collected data",
+					Description: `Your Promqlquery has to return a vector / scalar / matrix result. The warning and critical values are applied to every value.
    Examples:
        Vector:
            check_prometheus mode query -q 'up'
@@ -109,21 +108,20 @@ func main() {
 						flagWarning,
 						flagCritical,
 						cli.StringFlag{
-							Name: "search",
-							Usage: "If this variable is set, the given Golang regex will be used to search and replace the result with the 'replace' flag content. This will be appied on the perflabels.",
+							Name:        "search",
+							Usage:       "If this variable is set, the given Golang regex will be used to search and replace the result with the 'replace' flag content. This will be appied on the perflabels.",
 							Destination: &search,
 						},
 						cli.StringFlag{
-							Name: "replace",
-							Usage: "See search flag. If the 'search' flag is empty this flag will be ignored.",
+							Name:        "replace",
+							Usage:       "See search flag. If the 'search' flag is empty this flag will be ignored.",
 							Destination: &replace,
 						},
 					},
-
 				}, {
-					Name:  "targets_health",
-					Usage:"Returns the health of the targets",
-					Description:`The warning and critical thresholds are appied on the health_rate.`,
+					Name:        "targets_health",
+					Usage:       "Returns the health of the targets",
+					Description: `The warning and critical thresholds are appied on the health_rate.`,
 					Action: func(c *cli.Context) error {
 						startTimeout()
 						return mode.TargetsHealth(address, warning, critical)
@@ -133,7 +131,6 @@ func main() {
 						flagWarning,
 						flagCritical,
 					},
-
 				},
 			},
 		},

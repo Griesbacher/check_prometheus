@@ -1,16 +1,17 @@
 package mode
 
 import (
-	"github.com/griesbacher/check_prometheus/helper"
 	"context"
-	"time"
 	"fmt"
-	"github.com/prometheus/common/model"
+	"github.com/griesbacher/check_prometheus/helper"
 	"github.com/griesbacher/check_x"
-	"strconv"
+	"github.com/prometheus/common/model"
 	"regexp"
+	"strconv"
+	"time"
 )
 
+//Query allows the user to test data in the prometheus server
 func Query(address, query, warning, critical, alias, search, replace string) (err error) {
 	warn, err := check_x.NewThreshold(warning)
 	if err != nil {
