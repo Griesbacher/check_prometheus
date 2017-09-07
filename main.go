@@ -102,7 +102,10 @@ func main() {
 
        Search and Replace:
            check_prometheus m query -q 'up' --search '.*job=\"(.*?)\".*' --replace '$1'
-       --> OK - Query: 'up'|'prometheus'=1;;;; 'iapetos'=0;;;;`,
+       --> OK - Query: 'up'|'prometheus'=1;;;; 'iapetos'=0;;;;
+
+           check_prometheus m q -q '{handler="prometheus",quantile="0.99",job="prometheus",__name__=~"http_.*bytes"}' --search '.*__name__=\"(.*?)\".*' --replace '$1' -a 'http_in_out'
+       --> OK - Alias: 'http_in_out'|'http_request_size_bytes'=296;;;; 'http_response_size_bytes'=5554;;;;`,
 
 					Action: func(c *cli.Context) error {
 						startTimeout()
